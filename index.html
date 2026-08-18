@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazarus | لازاروس</title>
+    <meta name="description" content="Lazarus - Fragment & Fingerprint Config Builder for VLESS/Trojan">
+    <link rel="icon" href="logo.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Light Theme (Default) ===== */
+        :root {
+            --bg: #f8f7f4;
+            --bg-card: #ffffff;
+            --bg-input: #fafaf8;
+            --bg-hover: #f2f0ec;
+            --border: #e5e3df;
+            --border-subtle: #eceae6;
+            --text: #1a1816;
+            --text-secondary: #55524e;
+            --text-muted: #a3a09b;
+            --primary: #1a666e;
+            --primary-hover: #15555c;
+            --primary-active: #104449;
+            --primary-bg: #eef8f9;
+            --primary-border: #b0d4d8;
+            --primary-ring: rgba(26,102,110,0.15);
+            --accent: #92400e;
+            --accent-bg: #fefaf2;
+            --accent-border: #e5d5b5;
+            --danger: #b91c1c;
+            --danger-bg: #fef2f2;
+            --danger-border: #fca5a5;
+            --success: #15803d;
+            --success-bg: #f0fdf4;
+            --success-border: #86efac;
+            --tag-vless-text: #6d28d9;
+            --tag-vless-bg: #f5f3ff;
+            --tag-vless-border: #ddd6fe;
+            --tag-trojan-text: #b91c1c;
+            --tag-trojan-bg: #fef2f2;
+            --tag-trojan-border: #fca5a5;
+            --shadow-xs: 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+            --radius: 10px;
+            --radius-sm: 7px;
+            --radius-lg: 14px;
+            --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration: 0.2s;
+            --duration-md: 0.3s;
+            --font: 'Vazirmatn', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            --mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+        }
+
+        /* ===== Dark Theme ===== */
+        [data-theme="dark"] {
+            --bg: #131115;
+            --bg-card: #1c1a1f;
+            --bg-input: #22202a;
+            --bg-hover: #28262e;
+            --border: #33303c;
+            --border-subtle: #2a2832;
+            --text: #eae8f0;
+            --text-secondary: #9e99aa;
+            --text-muted: #65626e;
+            --primary: #56bcc6;
+            --primary-hover: #6ecbd3;
+            --primary-active: #82d5dc;
+            --primary-bg: #172a2e;
+            --primary-border: #2b4850;
+            --primary-ring: rgba(86,188,198,0.15);
+            --accent: #d4a04a;
+            --accent-bg: #28221a;
+            --accent-border: #483c22;
+            --danger: #f87171;
+            --danger-bg: #2a1418;
+            --danger-border: #5a2028;
+            --success: #4ade80;
+            --success-bg: #142a1a;
+            --success-border: #1a4a22;
+            --tag-vless-text: #a78bfa;
+            --tag-vless-bg: #1c1830;
+            --tag-vless-border: #382e58;
+            --tag-trojan-text: #fca5a5;
+            --tag-trojan-bg: #2a1418;
+            --tag-trojan-border: #5a2028;
+            --shadow-xs: 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+        }
+
+        /* ===== Reset ===== */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ===== Focus ===== */
+        :focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 24px 64px;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .toolbar-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 36px;
+            padding: 0 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: border-color var(--duration) var(--ease), color var(--duration) var(--ease), background var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+            user-select: none;
+        }
+
+        .toolbar-btn:hover {
+            border-color: var(--primary-border);
+            color: var(--text);
+            background: var(--bg-hover);
+        }
+
+        .toolbar-btn:active {
+            transform: scale(0.97);
+        }
+
+        .toolbar-btn:focus-visible {
+            outline-offset: 0;
+        }
+
+        .toolbar-btn .icon {
+            font-size: 1.05rem;
+            line-height: 1;
+        }
+
+        .header-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            transition: filter var(--duration) var(--ease);
+        }
+
+        .header-icon img {
+            width: 120px;
+            height: auto;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.12));
+        }
+
+        [data-theme="dark"] .header-icon img {
+            filter: drop-shadow(0 2px 10px rgba(86,188,198,0.15));
+        }
+
+        .header h1 {
+            font-size: 1.65rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .header .subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .protocol-tags {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .protocol-tag {
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            border: 1px solid;
+        }
+
+        .tag-vless {
+            color: var(--tag-vless-text);
+            border-color: var(--tag-vless-border);
+            background: var(--tag-vless-bg);
+        }
+
+        .tag-trojan {
+            color: var(--tag-trojan-text);
+            border-color: var(--tag-trojan-border);
+            background: var(--tag-trojan-bg);
+        }
+
+        /* ===== Card ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+        }
+
+        .card:focus-within {
+            border-color: var(--primary-border);
+            box-shadow: var(--shadow-sm), 0 0 0 3px var(--primary-ring);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 9px;
+            font-size: 17px;
+            flex-shrink: 0;
+        }
+
+        .card-icon.input-icon {
+            background: var(--primary-bg);
+            color: var(--primary);
+        }
+
+        .card-title h2 {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .card-title .hint {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .btn-clear {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all var(--duration) var(--ease);
+            flex-shrink: 0;
+        }
+
+        .btn-clear:hover {
+            border-color: var(--danger-border);
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+
+        .btn-clear:active {
+            transform: scale(0.92);
+        }
+
+        /* ===== Textarea ===== */
+        .config-textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+            transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+        }
+
+        .config-textarea:hover {
+            border-color: var(--primary-border);
+        }
+
+        .config-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-ring);
+        }
+
+        .config-textarea::placeholder {
+            color: var(--text-muted);
+            font-family: var(--font);
+            font-size: 0.82rem;
+        }
+
+        [dir="rtl"] .config-textarea::placeholder {
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* ===== Server Override ===== */
+        .server-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .server-label {
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        .server-input {
+            flex: 1;
+            padding: 8px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.84rem;
+            outline: none;
+            transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+            direction: ltr;
+            text-align: left;
+        }
+
+        .server-input:hover {
+            border-color: var(--primary-border);
+        }
+
+        .server-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-ring);
+        }
+
+        [dir="rtl"] .server-input::placeholder {
+            direction: rtl;
+            text-align: right;
+        }
+
+        .server-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* ===== Parsed Info ===== */
+        .parsed-info {
+            margin-top: 12px;
+            font-size: 0.76rem;
+            color: var(--text-secondary);
+            transition: all var(--duration) var(--ease);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .parsed-info:empty {
+            margin-top: 0;
+        }
+
+        .parsed-info .error-msg {
+            color: var(--danger);
+            font-weight: 500;
+            width: 100%;
+        }
+
+        .parsed-info .info-row {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg);
+            border: 1px solid var(--border-subtle);
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-size: 0.73rem;
+        }
+
+        .parsed-info .info-label {
+            color: var(--text-muted);
+        }
+
+        .parsed-info .info-value {
+            font-weight: 600;
+            direction: ltr;
+        }
+
+        /* ===== Settings Accordion ===== */
+        .settings-section {
+            margin-bottom: 10px;
+        }
+
+        .settings-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 13px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: var(--font);
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease), background var(--duration) var(--ease), border-radius 0s;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .settings-toggle.open {
+            border-radius: var(--radius) var(--radius) 0 0;
+            border-bottom-color: transparent;
+        }
+
+        .settings-toggle:hover {
+            border-color: var(--primary-border);
+            background: var(--bg-hover);
+        }
+
+        .settings-toggle:active {
+            background: var(--bg);
+        }
+
+        .settings-toggle:focus-visible {
+            outline-offset: 0;
+        }
+
+        .settings-toggle .toggle-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-toggle .toggle-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--accent-bg);
+            color: var(--accent);
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .settings-toggle .chevron {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-left: 1.5px solid var(--text-muted);
+            border-bottom: 1.5px solid var(--text-muted);
+            transform: rotate(-45deg);
+            transition: transform var(--duration-md) var(--ease-out);
+            flex-shrink: 0;
+            margin-inline-start: 8px;
+            margin-bottom: 2px;
+        }
+
+        .settings-toggle.open .chevron {
+            transform: rotate(135deg);
+        }
+
+        .settings-body {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding: 0 18px;
+            background: var(--bg-card);
+            border: 1px solid transparent;
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            margin-top: 0;
+            box-shadow: none;
+            will-change: max-height, opacity;
+            transition: max-height var(--duration-md) var(--ease-out), opacity var(--duration) var(--ease), padding var(--duration-md) var(--ease-out), border-color 0s;
+        }
+
+        .settings-body.open {
+            max-height: 600px;
+            opacity: 1;
+            padding: 20px 18px;
+            border-color: var(--border);
+            margin-top: -1px;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .setting-item {
+            margin-bottom: 18px;
+        }
+
+        .setting-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .setting-item label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .setting-item label .optional {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-size: 0.74rem;
+        }
+
+        .setting-select,
+        .setting-input {
+            width: 100%;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.84rem;
+            outline: none;
+            transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 32px;
+        }
+
+        [dir="rtl"] .setting-select {
+            background-position: left 12px center;
+            padding-right: 14px;
+            padding-left: 32px;
+        }
+
+        [data-theme="dark"] .setting-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23777'/%3E%3C/svg%3E");
+        }
+
+        .setting-select:hover,
+        .setting-input:hover {
+            border-color: var(--primary-border);
+        }
+
+        .setting-select:focus,
+        .setting-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-ring);
+        }
+
+        .setting-textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 10px 14px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+            transition: border-color var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+        }
+
+        .setting-textarea:hover {
+            border-color: var(--primary-border);
+        }
+
+        .setting-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-ring);
+        }
+
+        .setting-hint {
+            font-size: 0.73rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .setting-clear-link {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.74rem;
+            color: var(--danger);
+            cursor: pointer;
+            font-weight: 500;
+            background: none;
+            border: none;
+            font-family: var(--font);
+            padding: 2px 0;
+            transition: opacity var(--duration) var(--ease);
+        }
+
+        .setting-clear-link:hover {
+            text-decoration: underline;
+            opacity: 0.8;
+        }
+
+        /* ===== Action Button ===== */
+        .action-section {
+            text-align: center;
+            margin: 28px 0;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 13px 48px;
+            font-family: var(--font);
+            font-size: 1rem;
+            font-weight: 600;
+            color: #fff;
+            background: var(--primary);
+            border: none;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background var(--duration) var(--ease), transform var(--duration) var(--ease), box-shadow var(--duration) var(--ease);
+            box-shadow: 0 2px 6px rgba(26,102,110,0.2);
+        }
+
+        [data-theme="dark"] .btn-action {
+            box-shadow: 0 2px 8px rgba(86,188,198,0.15);
+        }
+
+        .btn-action:hover:not(:disabled) {
+            background: var(--primary-hover);
+            box-shadow: 0 4px 12px rgba(26,102,110,0.25);
+        }
+
+        .btn-action:active:not(:disabled) {
+            background: var(--primary-active);
+            transform: scale(0.97);
+            box-shadow: 0 1px 3px rgba(26,102,110,0.2);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .btn-action:disabled:hover {
+            transform: none;
+        }
+
+        .btn-action:focus-visible {
+            outline-offset: 3px;
+        }
+
+        .btn-action .icon {
+            font-size: 1.1rem;
+        }
+
+        .action-hint {
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .action-hint.ready {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* ===== Output ===== */
+        .output-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: opacity var(--duration-md) var(--ease), transform var(--duration-md) var(--ease), padding var(--duration-md) var(--ease), max-height var(--duration-md) var(--ease), margin var(--duration-md) var(--ease);
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 600px;
+            overflow: visible;
+        }
+
+        .output-section.hidden {
+            opacity: 0;
+            transform: translateY(8px);
+            pointer-events: none;
+            max-height: 0;
+            padding: 0 24px;
+            margin: 0;
+            border-width: 0;
+            overflow: hidden;
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .output-header h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-output {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 16px;
+            font-family: var(--font);
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: background var(--duration) var(--ease), border-color var(--duration) var(--ease), color var(--duration) var(--ease), transform var(--duration) var(--ease);
+        }
+
+        .btn-output:hover {
+            background: var(--bg-hover);
+            border-color: var(--primary-border);
+            color: var(--primary);
+        }
+
+        .btn-output:active {
+            transform: scale(0.96);
+        }
+
+        .btn-output:focus-visible {
+            outline: 2px solid var(--primary);
+            outline-offset: 2px;
+        }
+
+        .btn-output.copied {
+            background: var(--success-bg);
+            border-color: var(--success-border);
+            color: var(--success);
+        }
+
+        .output-textarea {
+            width: 100%;
+            min-height: 140px;
+            max-height: 500px;
+            padding: 14px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+        }
+
+        .output-textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-ring);
+        }
+
+        /* ===== Help Section ===== */
+        .help-section {
+            margin-bottom: 30px;
+        }
+
+        .help-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            padding: 13px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-family: var(--font);
+            font-size: 0.86rem;
+            font-weight: 500;
+            color: var(--text);
+            transition: border-color var(--duration) var(--ease), background var(--duration) var(--ease), border-radius 0s;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .help-toggle.open {
+            border-radius: var(--radius) var(--radius) 0 0;
+            border-bottom-color: transparent;
+        }
+
+        .help-toggle:hover {
+            border-color: var(--primary-border);
+            background: var(--bg-hover);
+        }
+
+        .help-toggle:active {
+            background: var(--bg);
+        }
+
+        .help-toggle:focus-visible {
+            outline-offset: 0;
+        }
+
+        .help-toggle .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--primary-bg);
+            color: var(--primary);
+            font-size: 15px;
+            flex-shrink: 0;
+        }
+
+        .help-toggle .chevron {
+            margin-inline-start: auto;
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            border-left: 1.5px solid var(--text-muted);
+            border-bottom: 1.5px solid var(--text-muted);
+            transform: rotate(-45deg);
+            transition: transform var(--duration-md) var(--ease-out);
+            flex-shrink: 0;
+            margin-inline-end: 0;
+            margin-bottom: 2px;
+        }
+
+        .help-toggle.open .chevron {
+            transform: rotate(135deg);
+        }
+
+        .help-body {
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            padding: 0 20px;
+            background: var(--bg-card);
+            border: 1px solid transparent;
+            border-top: none;
+            border-radius: 0 0 var(--radius) var(--radius);
+            margin-top: 0;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+            box-shadow: none;
+            will-change: max-height, opacity;
+            transition: max-height var(--duration-md) var(--ease-out), opacity var(--duration) var(--ease), padding var(--duration-md) var(--ease-out), border-color 0s;
+        }
+
+        .help-body.open {
+            max-height: 800px;
+            opacity: 1;
+            padding: 22px 20px;
+            border-color: var(--border);
+            margin-top: -1px;
+            box-shadow: var(--shadow-xs);
+        }
+
+        .help-body h4 {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin: 16px 0 8px;
+            font-weight: 600;
+        }
+
+        .help-body h4:first-child { margin-top: 0; }
+
+        .help-body p {
+            margin-bottom: 6px;
+        }
+
+        .help-body ul {
+            padding-inline-start: 20px;
+            margin-bottom: 4px;
+        }
+
+        .help-body li {
+            margin: 5px 0;
+        }
+
+        .help-body code {
+            font-family: var(--mono);
+            font-size: 0.76rem;
+            background: var(--primary-bg);
+            color: var(--primary);
+            padding: 2px 7px;
+            border-radius: 4px;
+            direction: ltr;
+        }
+
+        .help-body strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .help-body .warn {
+            background: var(--accent-bg);
+            border: 1px solid var(--accent-border);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin: 14px 0;
+            color: var(--accent);
+            font-size: 0.82rem;
+            line-height: 1.7;
+        }
+
+        /* ===== Footer ===== */
+        .footer {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.76rem;
+            padding-top: 12px;
+        }
+
+        /* ===== Animations ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s var(--ease-out);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px 14px 48px;
+            }
+            .header h1 { font-size: 1.3rem; }
+            .card { padding: 18px; border-radius: var(--radius); }
+            .btn-action { padding: 12px 36px; font-size: 0.94rem; }
+            .server-row { flex-direction: column; align-items: stretch; gap: 8px; }
+            .output-header { flex-direction: column; align-items: flex-start; }
+            .header-top { justify-content: center; }
+            .parsed-info { gap: 4px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <button class="toolbar-btn" id="btn-lang" type="button">
+                <span class="icon">🌐</span>
+                <span id="lang-label">EN</span>
+            </button>
+            <button class="toolbar-btn" id="btn-theme" type="button">
+                <span class="icon" id="theme-icon">&#9790;</span>
+                <span id="theme-label">Dark</span>
+            </button>
+        </div>
+        <div class="header-icon">
+            <img src="logo.svg" alt="Lazarus" width="36" height="37">
+        </div>
+        <h1 data-i18n="title">لازاروس</h1>
+        <p class="subtitle" data-i18n="subtitle">افزودن پارامترهای فرگمنت، رمزگشایی و اثر انگشت به لینک‌های پروکسی</p>
+        <div class="protocol-tags">
+            <span class="protocol-tag tag-vless">VLESS</span>
+            <span class="protocol-tag tag-trojan">TROJAN</span>
+        </div>
+    </header>
+
+    <!-- Input Card -->
+    <div class="card" id="input-card">
+        <div class="card-header">
+            <div class="card-title">
+                <div class="card-icon input-icon">&#128203;</div>
+                <div>
+                    <h2 data-i18n="input_title">لینک‌های پروکسی</h2>
+                    <div class="hint" data-i18n="input_hint">لینک‌های vless:// یا trojan:// را اینجا بچسبانید (هر خط یک لینک)</div>
+                </div>
+            </div>
+            <button class="btn-clear" id="btn-clear-input" title="Clear">&#10005;</button>
+        </div>
+        <div class="input-group">
+            <textarea class="config-textarea" id="input-area" dir="ltr"
+                placeholder="لینک vless:// یا trojan:// را اینجا بچسبانید...&#10;مثلاً: vless://uuid@address:port?params#remark&#10;برای چند لینک، هر کدام را در یک خط جداگانه قرار دهید"
+                spellcheck="false"></textarea>
+        </div>
+        <div class="server-row">
+            <span class="server-label" data-i18n="server_label">آدرس سرور جایگزین:</span>
+            <input class="server-input" id="server-override" type="text"
+                placeholder="Leave empty to keep original address" spellcheck="false">
+        </div>
+        <div class="parsed-info" id="parsed-info"></div>
+    </div>
+
+    <!-- Settings: Fingerprint -->
+    <div class="settings-section">
+        <button class="settings-toggle" id="toggle-fp" type="button">
+            <span class="toggle-left">
+                <span class="toggle-icon">&#128273;</span>
+                <span data-i18n="fp_title">اثر انگشت (Fingerprint)</span>
+            </span>
+            <span class="chevron"></span>
+        </button>
+        <div class="settings-body" id="body-fp">
+            <div class="setting-item">
+                <label data-i18n="fp_label">مقدار <code>fp</code> — همیشه اعمال می‌شود</label>
+                <select class="setting-select" id="val-fp">
+                    <option value="unsafe" selected>unsafe</option>
+                    <option value="chrome">chrome</option>
+                    <option value="firefox">firefox</option>
+                    <option value="safari">safari</option>
+                    <option value="random">random</option>
+                    <option value="none">none</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings: Cipher Suites -->
+    <div class="settings-section">
+        <button class="settings-toggle" id="toggle-cs" type="button">
+            <span class="toggle-left">
+                <span class="toggle-icon">&#128272;</span>
+                <span data-i18n="cs_title">مجموعه رمزها (Cipher Suites)</span>
+            </span>
+            <span class="chevron"></span>
+        </button>
+        <div class="settings-body" id="body-cs">
+            <div class="setting-item">
+                <label data-i18n="cs_label">مقدار <code>cs</code> <span class="optional">— فقط وقتی security=tls</span></label>
+                <textarea class="setting-textarea" id="val-cs" spellcheck="false">TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA:TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256:TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</textarea>
+                <div class="setting-hint" data-i18n="cs_hint">برای حذف این پارامتر، محتوای این کادر را پاک کنید.</div>
+                <button class="setting-clear-link" id="clear-cs" data-i18n="clear_cs">پاک کردن مقدار cs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings: Fragment Mask -->
+    <div class="settings-section">
+        <button class="settings-toggle" id="toggle-fm" type="button">
+            <span class="toggle-left">
+                <span class="toggle-icon">&#129513;</span>
+                <span data-i18n="fm_title">ماسک نهایی (Final Mask / Fragment)</span>
+            </span>
+            <span class="chevron"></span>
+        </button>
+        <div class="settings-body" id="body-fm">
+            <div class="setting-item">
+                <label data-i18n="fm_label">مقدار <code>fm</code> <span class="optional">— فقط وقتی security=tls</span></label>
+                <textarea class="setting-textarea" id="val-fm" rows="5" spellcheck="false">{"tcp": [{"type": "fragment", "settings": {"packets": "tlshello", "lengths": ["5", "94", "1"], "delays": ["0"], "maxSplit": "0"}},{"type": "fragment", "settings": {"packets": "1-1", "lengths": ["109", "1"], "delays": ["1"], "maxSplit": "355"}}]}</textarea>
+                <div class="setting-hint" data-i18n="fm_hint">برای حذف این پارامتر، محتوای این کادر را پاک کنید.</div>
+                <button class="setting-clear-link" id="clear-fm" data-i18n="clear_fm">پاک کردن مقدار fm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Button -->
+    <div class="action-section">
+        <button class="btn-action" id="btn-convert" disabled>
+            <span class="icon">&#9889;</span>
+            <span data-i18n="btn_convert">تبدیل کردن</span>
+        </button>
+        <div class="action-hint" id="action-hint" data-i18n="action_hint_idle">لینک‌های vless:// یا trojan:// را در کادر بالا بچسبانید</div>
+    </div>
+
+    <!-- Output -->
+    <div class="output-section hidden" id="output-section">
+        <div class="output-header">
+            <h3>
+                <span>&#128196;</span>
+                <span data-i18n="output_title">لینک‌های بهبود یافته</span>
+            </h3>
+            <div class="output-actions">
+                <button class="btn-output" id="btn-copy-all" title="Copy All">
+                    <span>&#128203;</span> <span data-i18n="copy_all">کپی همه</span>
+                </button>
+                <button class="btn-output" id="btn-clear-output" title="Clear Output">
+                    <span>&#128465;</span> <span data-i18n="clear_output">پاک کردن</span>
+                </button>
+            </div>
+        </div>
+        <textarea class="output-textarea" id="output-area" readonly dir="ltr"></textarea>
+    </div>
+
+    <!-- Help -->
+    <div class="help-section">
+        <button class="help-toggle" id="toggle-help" type="button">
+            <span class="help-icon">&#10067;</span>
+            <span data-i18n="help_toggle">راهنمای استفاده</span>
+            <span class="chevron"></span>
+        </button>
+        <div class="help-body" id="body-help">
+            <h4 data-i18n="help_how_title">نحوه کار</h4>
+            <p data-i18n="help_how_p1">لینک‌های <strong>VLESS</strong> یا <strong>Trojan</strong> (هر کدام در یک خط) را بچسبانید. ابزار پارامترهای زیر را اضافه می‌کند:</p>
+            <ul>
+                <li><strong><code>fp</code></strong> — <span data-i18n="help_fp">اثر انگشت TLS (مقدار پیش‌فرض: <code>unsafe</code>)</span></li>
+                <li><strong><code>cs</code></strong> — <span data-i18n="help_cs">لیست مجموعه رمزهای TLS (فقط وقتی <code>security=tls</code> باشد)</span></li>
+                <li><strong><code>fm</code></strong> — <span data-i18n="help_fm">تنظیمات فرگمنت بسته‌ها (فقط وقتی <code>security=tls</code> باشد)</span></li>
+                <li><strong data-i18n="help_server_label">آدرس سرور</strong> — <span data-i18n="help_server_desc">اگر آدرس وارد کنید، روی همه لینک‌ها اعمال می‌شود. خالی گذاشتن = حفظ آدرس اصلی</span></li>
+            </ul>
+            <div class="warn" data-i18n="help_warn">
+                &#9888;&#65039; این ابزار فقط روی کانفیگ‌هایی کار می‌کند که <strong>TLS</strong> فعال داشته باشند (<code>security=tls</code> یا <code>security=reality</code>).
+            </div>
+            <h4 data-i18n="help_multi_title">پشتیبانی از چند لینک</h4>
+            <p data-i18n="help_multi_p1">می‌توانید چند لینک را همزمان بچسبانید (هر کدام در یک خط جداگانه). همه لینک‌ها با هم پردازش شده و خروجی نیز چند خطی خواهد بود.</p>
+            <h4 data-i18n="help_client_title">نسخه مورد نیاز کلاینت</h4>
+            <ul>
+                <li><strong data-i18n="help_win">ویندوز</strong> — <strong>v2rayN</strong> <span data-i18n="help_win_ver">نسخه <strong>7.24.7</strong> یا بالاتر</span></li>
+                <li><strong data-i18n="help_android">اندروید</strong> — <strong>PattNG</strong> <span data-i18n="help_android_ver">یا <strong>v2rayNG</strong> نسخه <strong>2.3.4</strong> یا بالاتر</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p data-i18n="footer">پردازش کاملاً در مرورگر انجام می‌شود — هیچ داده‌ای به سرور ارسال نمی‌گردد.</p>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    /* ===== i18n ===== */
+    var strings = {
+        fa: {
+            title: 'لازاروس',
+            subtitle: 'افزودن پارامترهای فرگمنت، رمزگشایی و اثر انگشت به لینک‌های پروکسی',
+            input_title: 'لینک‌های پروکسی',
+            input_hint: 'لینک‌های vless:// یا trojan:// را اینجا بچسبانید (هر خط یک لینک)',
+            server_label: 'آدرس سرور جایگزین:',
+            fp_title: 'اثر انگشت (Fingerprint)',
+            fp_label: 'مقدار <code>fp</code> — همیشه اعمال می\u200cشود',
+            cs_title: 'مجموعه رمزها (Cipher Suites)',
+            cs_label: 'مقدار <code>cs</code> — فقط وقتی security=tls',
+            cs_hint: 'برای حذف این پارامتر، محتوای این کادر را پاک کنید.',
+            clear_cs: 'پاک کردن مقدار cs',
+            fm_title: 'ماسک نهایی (Final Mask / Fragment)',
+            fm_label: 'مقدار <code>fm</code> — فقط وقتی security=tls',
+            fm_hint: 'برای حذف این پارامتر، محتوای این کادر را پاک کنید.',
+            clear_fm: 'پاک کردن مقدار fm',
+            btn_convert: 'تبدیل کردن',
+            btn_convert_n: 'تبدیل کردن (%d لینک)',
+            action_hint_idle: 'لینک\u200ceای vless:// یا trojan:// را در کادر بالا بچسبانید',
+            action_hint_ready: 'آماده تبدیل %d لینک',
+            output_title: 'لینک\u200ceای بهبود یافته',
+            copy_all: 'کپی همه',
+            copied: 'کپی شد!',
+            clear_output: 'پاک کردن',
+            help_toggle: 'راهنمای استفاده',
+            help_how_title: 'نحوه کار',
+            help_how_p1: 'لینک\u200ceای <strong>VLESS</strong> یا <strong>Trojan</strong> (هر کدام در یک خط) را بچسبانید. ابزار پارامترهای زیر را اضافه می\u200cکند:',
+            help_fp: 'اثر انگشت TLS (مقدار پیش\u200cفرض: <code>unsafe</code>)',
+            help_cs: 'لیست مجموعه رمزهای TLS (فقط وقتی <code>security=tls</code> باشد)',
+            help_fm: 'تنظیمات فرگمنت بسته\u200ceا (فقط وقتی <code>security=tls</code> باشد)',
+            help_server_label: 'آدرس سرور',
+            help_server_desc: 'اگر آدرس وارد کنید، روی همه لینک\u200ceا اعمال می\u200cشود. خالی گذاشتن = حفظ آدرس اصلی',
+            help_warn: '\u26a0\ufe0f این ابزار فقط روی کانفیگ\u200ceایی کار می\u200cکند که TLS فعال داشته باشند (security=tls یا security=reality).',
+            help_multi_title: 'پشتیبانی از چند لینک',
+            help_multi_p1: 'می\u200cتوانید چند لینک را همزمان بچسبانید (هر کدام در یک خط جداگانه). همه لینک\u200ceا با هم پردازش شده و خروجی نیز چند خطی خواهد بود.',
+            help_client_title: 'نسخه مورد نیاز کلاینت',
+            help_win: 'ویندوز',
+            help_win_ver: 'نسخه 7.24.7 یا بالاتر',
+            help_android: 'اندروید',
+            help_android_ver: 'یا v2rayNG نسخه 2.3.4 یا بالاتر',
+            footer: 'پردازش کاملاً در مرورگر انجام می\u200cشود — هیچ داده\u200cای به سرور ارسال نمی\u200cگردد.',
+            parsed_protocol: 'پروتکل:',
+            parsed_server: 'سرور:',
+            parsed_port: 'پورت:',
+            parsed_security: 'امنیت:',
+            parsed_name: 'نام:',
+            error_unsupported: 'فقط لینک\u200ceای vless:// و trojan:// پشتیبانی می\u200cشوند',
+            error_parse: 'خطا در تحلیل لینک'
+        },
+        en: {
+            title: 'Lazarus',
+            subtitle: 'Add fragment, fingerprint & cipher parameters to proxy links',
+            input_title: 'Proxy Links',
+            input_hint: 'Paste vless:// or trojan:// links here (one per line)',
+            server_label: 'Replace server:',
+            fp_title: 'Fingerprint',
+            fp_label: 'value <code>fp</code> — always applied',
+            cs_title: 'Cipher Suites',
+            cs_label: 'value <code>cs</code> — only when security=tls',
+            cs_hint: 'Clear this field to remove the cs parameter.',
+            clear_cs: 'Clear cs value',
+            fm_title: 'Final Mask / Fragment',
+            fm_label: 'value <code>fm</code> — only when security=tls',
+            fm_hint: 'Clear this field to remove the fm parameter.',
+            clear_fm: 'Clear fm value',
+            btn_convert: 'Convert',
+            btn_convert_n: 'Convert (%d links)',
+            action_hint_idle: 'Paste vless:// or trojan:// links in the box above',
+            action_hint_ready: 'Ready to convert %d link(s)',
+            output_title: 'Enhanced Links',
+            copy_all: 'Copy All',
+            copied: 'Copied!',
+            clear_output: 'Clear',
+            help_toggle: 'Help',
+            help_how_title: 'How It Works',
+            help_how_p1: 'Paste <strong>VLESS</strong> or <strong>Trojan</strong> links (one per line). The tool adds these parameters:',
+            help_fp: 'TLS fingerprint (default: <code>unsafe</code>)',
+            help_cs: 'TLS cipher suite list (only when <code>security=tls</code>)',
+            help_fm: 'Packet fragment settings (only when <code>security=tls</code>)',
+            help_server_label: 'Server address',
+            help_server_desc: 'If entered, applies to all links. Leave empty to keep the original address.',
+            help_warn: '\u26a0\ufe0f This tool only works with configs that have <strong>TLS</strong> enabled (<code>security=tls</code> or <code>security=reality</code>).',
+            help_multi_title: 'Multiple Links',
+            help_multi_p1: 'You can paste multiple links at once (one per line). All links are processed together and the output will also be multi-line.',
+            help_client_title: 'Required Client Version',
+            help_win: 'Windows',
+            help_win_ver: 'v2rayN version <strong>7.24.7</strong> or higher',
+            help_android: 'Android',
+            help_android_ver: 'PattNG or <strong>v2rayNG</strong> version <strong>2.3.4</strong> or higher',
+            footer: 'All processing happens locally in your browser — no data is sent to any server.',
+            parsed_protocol: 'Protocol:',
+            parsed_server: 'Server:',
+            parsed_port: 'Port:',
+            parsed_security: 'Security:',
+            parsed_name: 'Name:',
+            error_unsupported: 'Only vless:// and trojan:// links are supported',
+            error_parse: 'Error parsing link'
+        }
+    };
+
+    var currentLang = localStorage.getItem('lazarus-lang') || 'fa';
+
+    function t(key) {
+        return (strings[currentLang] && strings[currentLang][key]) || key;
+    }
+
+    function applyLang() {
+        var isRtl = currentLang === 'fa';
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
+        document.getElementById('lang-label').textContent = isRtl ? 'EN' : 'FA';
+        document.title = t('title') + ' | ' + (currentLang === 'fa' ? 'Lazarus' : '\u0644\u0627\u0632\u0627\u0631\u0648\u0633');
+
+        document.querySelectorAll('[data-i18n]').forEach(function (el) {
+            var key = el.getAttribute('data-i18n');
+            var val = t(key);
+            if (val && val.indexOf('<') !== -1) {
+                el.innerHTML = val;
+            } else if (val) {
+                el.textContent = val;
+            }
+        });
+
+        var serverInput = document.getElementById('server-override');
+        if (isRtl) {
+            serverInput.placeholder = 'خالی بگذارید تا آدرس اصلی حفظ شود';
+        } else {
+            serverInput.placeholder = 'Leave empty to keep original address';
+        }
+
+        var textarea = document.getElementById('input-area');
+        if (isRtl) {
+            textarea.placeholder = 'لینک vless:// یا trojan:// را اینجا بچسبانید...\nمثلاً: vless://uuid@address:port?params#remark\nبرای چند لینک، هر کدام را در یک خط جداگانه قرار دهید';
+        } else {
+            textarea.placeholder = 'Paste vless:// or trojan:// links here...\ne.g.: vless://uuid@address:port?params#remark\nFor multiple links, put each on a separate line';
+        }
+
+        onInput();
+    }
+
+    /* ===== Theme ===== */
+    var currentTheme = localStorage.getItem('lazarus-theme') || 'light';
+
+    function applyTheme() {
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        var icon = document.getElementById('theme-icon');
+        var label = document.getElementById('theme-label');
+        if (currentTheme === 'dark') {
+            icon.innerHTML = '&#9728;';
+            label.textContent = currentLang === 'fa' ? 'روشن' : 'Light';
+        } else {
+            icon.innerHTML = '&#9790;';
+            label.textContent = currentLang === 'fa' ? 'تاریک' : 'Dark';
+        }
+    }
+
+    /* ===== DOM ===== */
+    var inputArea     = document.getElementById('input-area');
+    var btnClearInput = document.getElementById('btn-clear-input');
+    var serverOvrd    = document.getElementById('server-override');
+    var parsedInfo    = document.getElementById('parsed-info');
+    var valFp         = document.getElementById('val-fp');
+    var valCs         = document.getElementById('val-cs');
+    var valFm         = document.getElementById('val-fm');
+    var btnConvert    = document.getElementById('btn-convert');
+    var actionHint    = document.getElementById('action-hint');
+    var outputSection = document.getElementById('output-section');
+    var outputArea    = document.getElementById('output-area');
+    var btnCopyAll    = document.getElementById('btn-copy-all');
+    var btnClearOut   = document.getElementById('btn-clear-output');
+
+    var lastAutoServer = '';
+
+    /* ===== Extract lines ===== */
+    function extractLines(raw) {
+        if (!raw) return [];
+        return raw.split(/[\r\n]+/).map(function (l) { return l.trim(); }).filter(function (l) { return l.length > 0; });
+    }
+
+    /* ===== Parse VLESS ===== */
+    function parseVless(url) {
+        try {
+            var u = new URL(url);
+            var params = Object.fromEntries(u.searchParams);
+            return {
+                protocol: 'vless',
+                uuid: u.username || decodeURIComponent(url.split('://')[1].split('@')[0]),
+                server: u.hostname,
+                port: parseInt(u.port) || 443,
+                remark: decodeURIComponent(u.hash.slice(1) || ''),
+                type: params.type || 'tcp',
+                security: params.security || 'none',
+                sni: params.sni || undefined,
+                fp: params.fp || 'chrome',
+                host: params.host || undefined,
+                path: params.path || undefined,
+                serviceName: params.serviceName || undefined,
+                authority: params.authority || undefined,
+                mode: params.mode || undefined,
+                headerType: params.headerType || 'none',
+                alpn: params.alpn || undefined,
+                pbk: params.pbk || undefined,
+                sid: params.sid || undefined,
+                spx: params.spx || undefined,
+                flow: params.flow || undefined,
+                encryption: params.encryption || 'none',
+                ech: params.ech || undefined,
+                allowInsecure: params.allowInsecure === '1' || params.allowInsecure === 'true' || params.insecure === '1' || params.insecure === 'true'
+            };
+        } catch (e) {
+            return { error: t('error_parse') + ': ' + e.message };
+        }
+    }
+
+    /* ===== Parse Trojan ===== */
+    function parseTrojan(url) {
+        try {
+            var u = new URL(url);
+            var params = Object.fromEntries(u.searchParams);
+            return {
+                protocol: 'trojan',
+                password: decodeURIComponent(u.username || url.split('://')[1].split('@')[0]),
+                server: u.hostname,
+                port: parseInt(u.port) || 443,
+                remark: decodeURIComponent(u.hash.slice(1) || ''),
+                type: params.type || 'tcp',
+                security: params.security || 'tls',
+                sni: params.sni || undefined,
+                fp: params.fp || 'chrome',
+                host: params.host || undefined,
+                path: params.path || undefined,
+                serviceName: params.serviceName || undefined,
+                authority: params.authority || undefined,
+                mode: params.mode || undefined,
+                headerType: params.headerType || 'none',
+                alpn: params.alpn || undefined,
+                pbk: params.pbk || undefined,
+                sid: params.sid || undefined,
+                spx: params.spx || undefined,
+                ech: params.ech || undefined,
+                allowInsecure: params.allowInsecure === '1' || params.allowInsecure === 'true' || params.insecure === '1' || params.insecure === 'true'
+            };
+        } catch (e) {
+            return { error: t('error_parse') + ': ' + e.message };
+        }
+    }
+
+    /* ===== Parse single URL ===== */
+    function parseSingle(raw) {
+        var url = raw.trim();
+        if (!url) return null;
+        if (url.startsWith('vless://')) return parseVless(url);
+        if (url.startsWith('trojan://')) return parseTrojan(url);
+        return { error: t('error_unsupported') };
+    }
+
+    /* ===== Core enhanceURL ===== */
+    function enhanceURL(raw) {
+        var url = raw.trim();
+        if (!url) return { error: 'No URL provided' };
+        if (!url.startsWith('vless://') && !url.startsWith('trojan://')) {
+            return { error: 'Only VLESS and Trojan URLs are supported' };
+        }
+
+        var u;
+        try {
+            u = new URL(url);
+        } catch (e) {
+            return { error: 'Failed to parse URL: ' + e.message };
+        }
+
+        var params = u.searchParams;
+        var security = params.get('security') || 'none';
+
+        /* Server override */
+        var server = serverOvrd.value.trim();
+        if (server) {
+            var host = server.indexOf(':') !== -1 && !server.startsWith('[')
+                ? '[' + server + ']'
+                : server;
+            try {
+                u.hostname = host;
+            } catch (e) {
+                return { error: 'Invalid server address: ' + e.message };
+            }
+        }
+
+        /* Fingerprint — always applied */
+        var fp = valFp.value.trim();
+        if (fp && fp !== 'none') {
+            params.set('fp', fp);
+        }
+
+        /* Cipher suites & fragment mask — only with TLS */
+        if (security === 'tls') {
+            var cs = valCs.value.trim();
+            if (cs) {
+                params.set('cs', cs);
+            }
+            var fm = valFm.value.trim();
+            if (fm) {
+                params.set('fm', fm);
+            }
+        }
+
+        /* URLSearchParams encodes spaces as '+', v2ray uses '%20' */
+        u.search = u.search.replace(/\+/g, '%20');
+
+        return { url: u.toString() };
+    }
+
+    /* ===== Render parsed info ===== */
+    function renderParsed(list) {
+        if (!list || list.length === 0) {
+            parsedInfo.innerHTML = '';
+            return;
+        }
+        var html = '';
+        var items = Array.isArray(list) ? list : [list];
+        items.forEach(function (p) {
+            if (p.error) {
+                html += '<div class="error-msg">' + escHtml(p.error) + '</div>';
+            } else if (p.protocol === 'vless' || p.protocol === 'trojan') {
+                html += '<span class="info-row"><span class="info-label">' + t('parsed_protocol') + '</span><span class="info-value">' + p.protocol.toUpperCase() + '</span></span>';
+                html += '<span class="info-row"><span class="info-label">' + t('parsed_server') + '</span><span class="info-value">' + escHtml(p.server) + '</span></span>';
+                html += '<span class="info-row"><span class="info-label">' + t('parsed_port') + '</span><span class="info-value">' + p.port + '</span></span>';
+                html += '<span class="info-row"><span class="info-label">' + t('parsed_security') + '</span><span class="info-value">' + escHtml(p.security) + '</span></span>';
+                if (p.remark) {
+                    html += '<span class="info-row"><span class="info-label">' + t('parsed_name') + '</span><span class="info-value">' + escHtml(p.remark) + '</span></span>';
+                }
+            }
+        });
+        parsedInfo.innerHTML = html;
+    }
+
+    function escHtml(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    /* ===== onInput ===== */
+    function onInput() {
+        var val = inputArea.value.trim();
+        var lines = extractLines(val);
+        var parsedList = [];
+        var unsupportedCount = 0;
+
+        if (lines.length > 0) {
+            lines.forEach(function (line) {
+                var p = parseSingle(line);
+                if (p && !p.error) {
+                    if (p.protocol === 'vless' || p.protocol === 'trojan') {
+                        parsedList.push(p);
+                    } else {
+                        unsupportedCount++;
+                    }
+                }
+            });
+        }
+
+        /* Auto-fill server */
+        if (parsedList.length === 1) {
+            var firstServer = parsedList[0].server || '';
+            var current = serverOvrd.value.trim();
+            if (!current || current === lastAutoServer || current === firstServer) {
+                serverOvrd.value = firstServer;
+                lastAutoServer = firstServer;
+            }
+        } else if (parsedList.length > 1) {
+            var cur = serverOvrd.value.trim();
+            if (!cur || cur === lastAutoServer) {
+                serverOvrd.value = '';
+                lastAutoServer = '';
+            }
+        } else if (!serverOvrd.value.trim()) {
+            lastAutoServer = '';
+        }
+
+        if (lines.length > 0) {
+            if (parsedList.length > 0) {
+                renderParsed(parsedList.length === 1 ? parsedList[0] : parsedList);
+            } else {
+                renderParsed([{ error: unsupportedCount > 0 ? t('error_unsupported') : t('error_parse') }]);
+            }
+        } else {
+            renderParsed(null);
+        }
+
+        var count = parsedList.length;
+        btnConvert.disabled = count === 0;
+
+        var convertText = count > 1 ? t('btn_convert_n').replace('%d', count) : t('btn_convert');
+        btnConvert.querySelector('[data-i18n="btn_convert"]').textContent = convertText;
+
+        var hintText = count > 0
+            ? t('action_hint_ready').replace('%d', count)
+            : t('action_hint_idle');
+        actionHint.textContent = hintText;
+        actionHint.className = count > 0 ? 'action-hint ready' : 'action-hint';
+    }
+
+    /* ===== onConvert ===== */
+    function onConvert() {
+        var val = inputArea.value.trim();
+        var lines = extractLines(val);
+        if (lines.length === 0) {
+            outputSection.classList.add('hidden');
+            return;
+        }
+
+        var enhancedUrls = [];
+        lines.forEach(function (line) {
+            var p = parseSingle(line);
+            if (p && !p.error && (p.protocol === 'vless' || p.protocol === 'trojan')) {
+                var res = enhanceURL(line);
+                if (res && res.url) {
+                    enhancedUrls.push(res.url);
+                }
+            }
+        });
+
+        if (enhancedUrls.length === 0) {
+            outputSection.classList.add('hidden');
+            return;
+        }
+
+        outputArea.value = enhancedUrls.join('\n\n');
+        outputSection.classList.remove('hidden');
+        outputSection.classList.add('fade-in');
+        outputSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(function () { outputSection.classList.remove('fade-in'); }, 400);
+    }
+
+    /* ===== Events: Language Toggle ===== */
+    document.getElementById('btn-lang').addEventListener('click', function () {
+        currentLang = currentLang === 'fa' ? 'en' : 'fa';
+        localStorage.setItem('lazarus-lang', currentLang);
+        applyLang();
+        applyTheme();
+    });
+
+    /* ===== Events: Theme Toggle ===== */
+    document.getElementById('btn-theme').addEventListener('click', function () {
+        currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+        localStorage.setItem('lazarus-theme', currentTheme);
+        applyTheme();
+    });
+
+    /* ===== Events: Input ===== */
+    inputArea.addEventListener('input', onInput);
+    inputArea.addEventListener('paste', function () { setTimeout(onInput, 50); });
+    btnClearInput.addEventListener('click', function () {
+        inputArea.value = '';
+        onInput();
+    });
+
+    /* ===== Events: Convert ===== */
+    btnConvert.addEventListener('click', onConvert);
+
+    /* ===== Events: Copy All ===== */
+    btnCopyAll.addEventListener('click', function () {
+        var text = outputArea.value;
+        if (!text) return;
+        navigator.clipboard.writeText(text).then(function () {
+            btnCopyAll.classList.add('copied');
+            btnCopyAll.querySelector('[data-i18n]').textContent = t('copied');
+            setTimeout(function () {
+                btnCopyAll.classList.remove('copied');
+                btnCopyAll.querySelector('[data-i18n]').textContent = t('copy_all');
+            }, 2000);
+        });
+    });
+
+    /* ===== Events: Clear Output ===== */
+    btnClearOut.addEventListener('click', function () {
+        outputArea.value = '';
+        outputSection.classList.add('hidden');
+    });
+
+    /* ===== Accordion toggles ===== */
+    function setupToggle(toggleId, bodyId) {
+        var toggle = document.getElementById(toggleId);
+        var body = document.getElementById(bodyId);
+        toggle.addEventListener('click', function () {
+            body.classList.toggle('open');
+            toggle.classList.toggle('open');
+        });
+    }
+
+    setupToggle('toggle-fp', 'body-fp');
+    setupToggle('toggle-cs', 'body-cs');
+    setupToggle('toggle-fm', 'body-fm');
+    setupToggle('toggle-help', 'body-help');
+
+    /* ===== Clear CS / FM links ===== */
+    document.getElementById('clear-cs').addEventListener('click', function () {
+        valCs.value = '';
+    });
+    document.getElementById('clear-fm').addEventListener('click', function () {
+        valFm.value = '';
+    });
+
+    /* ===== Init ===== */
+    applyTheme();
+    applyLang();
+
+})();
+</script>
+</body>
+</html>
